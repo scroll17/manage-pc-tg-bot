@@ -1,22 +1,18 @@
 {
   "name": "control_telegram_bot",
   "version": "1.0.0",
+  "private": true,
   "description": "Control PC bot",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "telegram",
-    "bot",
-    "pc",
-    "windows",
-    "linux"
-  ],
-  "author": "scroll17",
-  "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.15",
-    "telegraf": "^3.33.3"
-  }
+    "address": "^1.1.2",
+    "internal-ip": "^6.2.0",
+    "lodash": "^4.17.21",
+    "telegraf": "^4.3.0"
+  },
+  "author": "scroll17",
+  "license": "MIT"
 }
