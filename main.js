@@ -6,8 +6,8 @@ const internalIp = require('internal-ip');
 const fs = require('fs');
 const path = require('path');
 
-
-
+const fileName = path.dirname(__dirname, '../ip.txt');
+fs.writeFileSync(fileName, `local ip: ${address.ip()}`, { encoding: 'utf8' })
 
 const state = require('./state/state');
 
