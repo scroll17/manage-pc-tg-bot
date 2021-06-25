@@ -1,81 +1,49 @@
-const address = require('address');
-const publicIp = require('public-ip');
-const shell = require('shelljs');
-const fs = require('fs');
-const path = require('path');
-const { Telegraf } = require('telegraf')
+/*external libs*/
+import { Telegraf, Telegram } from 'telegraf'
+import dotenv from 'dotenv'
+import shell from 'shelljs';
+import address from 'address';
+import publicIp from 'public-ip';
+/*other*/
 
-async function sleep(time) {
-    return new Promise(r => {
-        setTimeout(r, time)
-    })
+// load envs from .env file
+dotenv.config();
+
+const bot = new Telegraf(process.env.BOT_TOKEN);
+
+const states = {
+    shell: false
 }
 
-async function writeToFile(filePath, data) {
-    await fs.promises.writeFile(filePath, data, { encoding: 'utf-8' })
-}
-
-async function appendToFile(filePath, data) {
-    await fs.promises.appendFile(filePath, data, { encoding: 'utf-8' })
-}
-
-const completed = {
-    writeIp: false,
-    createBot: false,
-    runBot: false,
-    bot: null
-}
-
-async function writeIp() {
-    if(completed.writeIp) return;
-
-    console.log('------ WRITE IP ------')
-
-    const fileName = path.resolve(__dirname, '../ip.txt');
-    await writeToFile(fileName, `local ip: ${address.ip()}`)
-
-    console.log('------ WRITED IP ------')
-
-    completed.writeIp = true;
-}
-
-function createBot() {
-    if(completed.createBot) return completed.bot;
-
-    console.log('------ CREATE BOT ------')
-
-    const bot = new Telegraf('1009977345:AAGgtj8tTao_hnFGGvs3OUK2EDPWuagviUI');
-
-    bot.command('ip', async ctx => {
+bot.command('/ip', async ctx => {
+    const localIp = address.ip();
+    const externalIp = await (async () => {
         let ip;
         try {
             ip = await publicIp.v4()
-        } catch {}
+        } catch(e) {
+            await  ctx.reply(`error upon receipt of ip: `, e)
+            ip = "failed to load"
+        }
 
-        await ctx.reply(`
-            local ip: ${address.ip()}
-            ip: ${ip}
-        `);
-    })
+        return ip;
+    })();
 
-    bot.command('/ip2', async ctx => {
-        let ip;
-        try {
-            ip = await publicIp.v4()
-        } catch {}
+    await ctx.reply(`local ip: ${localIp} \nip: ${externalIp}`);
+})
 
-        await ctx.reply(`
-            local ip: ${address.ip()}
-            ip: ${ip}
-        `);
-    })
+bot.command('/shell', async ctx => {
+    states.shell = !states.shell;
 
+    return ctx.reply(`shell ${states.shell ? 'ON' : 'OFF'}`)
+})
 
-    bot.use(async ctx => {
-        const text = ctx.message ? ctx.message.text.trim() : undefined;
+bot.on('text',async ctx => {
+    if(states.shell) {
+        const text = ctx.message.text;
 
         if(text) {
-            const result = shell.exec(
+            const result = await shell.exec(
                 text,
                 {
                     silent: true,
@@ -83,47 +51,36 @@ function createBot() {
                 }
             )
 
-            await ctx.reply(`STDOUT: ${result.stdout}`)
-            await ctx.reply(`STDERR: ${result.stderr}`)
-        }
-    })
-
-    console.log('------ CREATED BOT ------')
-
-    completed.createBot = true;
-
-    return (completed.bot = bot)
-}
-
-async function runBot(bot) {
-    if(completed.runBot) return;
-
-    console.log('------ RUN BOT ------')
-
-    await bot.launch()
-
-    console.log('------ RUNNED BOT ------')
-
-    completed.runBot = true;
-}
-
-;(async () => {
-    let botRun = false;
-    let iter = 0;
-
-    const errorFilePath = path.resolve(__dirname, './error.txt');
-
-    while (iter++ < 10 && !botRun) {
-        try {
-            const bot = createBot();
-
-            await runBot(bot)
-            botRun = true;
-        } catch (e) {
-            console.log('e => ', e)
-            await appendToFile(errorFilePath, e.toString())
-
-            await sleep(2000);
+            result.stdout && await ctx.reply(`STDOUT: \n${result.stdout}`)
+            result.stderr && await ctx.reply(`STDERR: \n${result.stderr}`)
         }
     }
-})()
+})
+
+;(async () => {
+    await bot.launch();
+    await bot.telegram.sendMessage(process.env.OWNER_TG_ID, 'bot started');
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
