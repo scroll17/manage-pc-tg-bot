@@ -6,16 +6,18 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
-    "dev": "NODE_ENV=development ts-node-dev --respawn --transpileOnly src/index.ts",
-    "watch": "NODE_ENV=development ts-node-dev --respawn --transpileOnly"
+    "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only src/index.ts",
+    "watch": "NODE_ENV=development ts-node-dev --respawn --transpile-0nly"
   },
   "devDependencies": {
     "@types/node": "^14.0.13",
+    "@types/shelljs": "^0.8.8",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "<3.8.0"
   },
   "dependencies": {
     "address": "^1.1.2",
+    "dotenv": "^10.0.0",
     "internal-ip": "^6.2.0",
     "ip": "^1.1.5",
     "lodash": "^4.17.21",
