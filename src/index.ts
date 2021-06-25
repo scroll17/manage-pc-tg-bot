@@ -57,7 +57,7 @@ function createBot() {
             ip: ${ip}
         `);
     })
-    
+
     bot.command('/ip2', async ctx => {
         let ip;
         try {
@@ -115,10 +115,10 @@ async function runBot(bot) {
 
     while (iter++ < 10 && !botRun) {
         try {
-             const bot = createBot();
+            const bot = createBot();
 
-             await runBot(bot)
-             botRun = true;
+            await runBot(bot)
+            botRun = true;
         } catch (e) {
             console.log('e => ', e)
             await appendToFile(errorFilePath, e.toString())
