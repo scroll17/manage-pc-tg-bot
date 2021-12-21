@@ -37,3 +37,5 @@
       1. **Habit mode** - reminder with special repeat
 8. `/tasks`
    1. can create and register task on as NodeJS script for using later
+9. `/shell`
+   1. can execute shell commands 
