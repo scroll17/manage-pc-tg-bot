@@ -7,7 +7,7 @@
   "scripts": {
     "tsc": "tsc",
     "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only src/index.ts",
-    "watch": "NODE_ENV=development ts-node-dev --respawn --transpile-0nly"
+    "watch": "NODE_ENV=development ts-node-dev --respawn --transpile-only"
   },
   "devDependencies": {
     "@types/node": "^14.0.13",
@@ -21,6 +21,8 @@
     "internal-ip": "^6.2.0",
     "ip": "^1.1.5",
     "lodash": "^4.17.21",
+    "mailgun.js": "file:../../SoftServe/mailgun.js/dist",
+    "node-mailjet": "file:../../SoftServe/mailjet-apiv3-nodejs/dist",
     "public-ip": "^4.0.3",
     "shelljs": "^0.8.4",
     "telegraf": "^4.3.0"
